@@ -166,7 +166,11 @@
           style="margin: 10px 0;"
         >
         </el-input>
-        <el-button type="primary" icon="fas fa-paper-plane" @click="handleCommandline()"></el-button>
+        <el-button
+          type="primary"
+          icon="fas fa-paper-plane"
+          @click="handleCommandline()"
+        ></el-button>
       </div>
       <div class="Macro">
         <!-- <el-button
@@ -242,44 +246,24 @@ export default class WindowLog extends Vue {
   };
 
   barChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-      label: 'Dataset 1',
-      backgroundColor: 'rgba(79, 226, 21, 0.5)',
-      data: [
-        1,
-        5,
-        1,
-        10,
-        3,
-        4,
-        6
-      ]
-    }, {
-      label: 'Dataset 2',
-      backgroundColor: 'rgba(255, 251, 10, 0.5)',
-      data: [
-        3,
-        2,
-        7,
-        9,
-        9,
-        1,
-        2
-      ]
-    }, {
-      label: 'Dataset 3',
-      backgroundColor: 'rgba(209, 5, 9, 0.5)',
-      data: [
-        3,
-        1,
-        2,
-        5,
-        9,
-        8,
-        7
-      ]
-    }]
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Dataset 1",
+        backgroundColor: "rgba(79, 226, 21, 0.5)",
+        data: [1, 5, 1, 10, 3, 4, 6]
+      },
+      {
+        label: "Dataset 2",
+        backgroundColor: "rgba(255, 251, 10, 0.5)",
+        data: [3, 2, 7, 9, 9, 1, 2]
+      },
+      {
+        label: "Dataset 3",
+        backgroundColor: "rgba(209, 5, 9, 0.5)",
+        data: [3, 1, 2, 5, 9, 8, 7]
+      }
+    ]
   };
 
   @Watch("currentdeviceid")
@@ -489,15 +473,15 @@ export default class WindowLog extends Vue {
   createChart(chartId: string, chartData: any) {
     const ctx = document.getElementById(chartId) as HTMLCanvasElement;
     new Chart(ctx, {
-      type: 'bar',
+      type: "bar",
       data: chartData,
       options: {
         title: {
           display: false,
-          text: 'Chart.js Bar Chart - Stacked'
+          text: "Chart.js Bar Chart - Stacked"
         },
         tooltips: {
-          mode: 'index',
+          mode: "index",
           intersect: false
         },
         responsive: true,

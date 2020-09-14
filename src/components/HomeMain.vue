@@ -120,7 +120,7 @@
               icon="fas fa-box"
               circle
               size="mini"
-              @click="handleTest()"
+              @click="refreshApp()"
             ></el-button>
           </div>
           <div class="iconblock-small">
@@ -159,12 +159,14 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import WindowLog from "@/components/WindowLog.vue";
 import NotificationComponent from "@/components/Notification.vue";
 import serverstatus from "@/utils/status";
+import update from "@/mixins/update";
 
 @Component({
   components: {
     WindowLog,
     NotificationComponent
-  }
+  },
+  mixins: [update]
 })
 export default class HomeMain extends Vue {
   @Action("device/Register") RegisterDevice: any;

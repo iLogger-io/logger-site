@@ -222,7 +222,7 @@ const actions = {
           reject(error);
         });
     });
-  },
+  }
 };
 
 const getters = {

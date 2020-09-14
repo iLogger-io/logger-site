@@ -19,8 +19,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // configure language
-locale.use(lang)
-Vue.use(Element, { locale })
+locale.use(lang);
+Vue.use(Element, { locale });
 Vue.config.productionTip = false;
 Vue.use({
   install(Vue) {
