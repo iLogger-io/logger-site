@@ -9,10 +9,10 @@
         ref="form"
         @submit.native.prevent="signup"
       >
-        <el-form-item prop="username">
+        <el-form-item prop="displayName">
           <el-input
-            v-model="model.username"
-            placeholder="Username"
+            v-model="model.displayName"
+            placeholder="Display Name"
             prefix-icon="fas fa-user"
           ></el-input>
         </el-form-item>
@@ -77,57 +77,57 @@ export default class Signup extends Vue {
   };
 
   model: any = {
-    username: "",
+    displayName: "",
     email: "",
     password: "",
-    passwordConfirm: ""
+    passwordConfirm: "",
   };
   loading = false;
   rules: any = {
-    username: [
+    displayName: [
       {
         required: true,
-        message: "Username is required",
-        trigger: "blur"
+        message: "Display Name is required",
+        trigger: "blur",
       },
       {
         min: 3,
-        message: "Username length should be at least 3 characters",
-        trigger: "blur"
-      }
+        message: "Display Name length should be at least 3 characters",
+        trigger: "blur",
+      },
     ],
     email: [
       {
         required: true,
         message: "Please input email address",
-        trigger: "blur"
+        trigger: "blur",
       },
       {
         type: "email",
         message: "Please input correct email address",
-        trigger: ["blur", "change"]
-      }
+        trigger: ["blur", "change"],
+      },
     ],
     password: [
       { required: true, message: "Password is required", trigger: "blur" },
       {
         min: 8,
         message: "Password length should be at least 8 characters",
-        trigger: "blur"
-      }
+        trigger: "blur",
+      },
     ],
     passwordConfirm: [
       {
         required: true,
         message: "Password confirmation is required",
-        trigger: "blur"
+        trigger: "blur",
       },
       {
         min: 8,
         message: "Password confirmation length should be at least 8 characters",
-        trigger: "blur"
-      }
-    ]
+        trigger: "blur",
+      },
+    ],
   };
 
   async signup() {

@@ -4,21 +4,17 @@
       <h2>Login</h2>
       <el-form
         class="login-form"
-        :model="model"
+        :model="form"
         :rules="rules"
         ref="form"
         @submit.native.prevent="login"
       >
         <el-form-item prop="email">
-          <el-input
-            v-model="model.email"
-            placeholder="Email"
-            prefix-icon="fas fa-user"
-          ></el-input>
+          <el-input v-model="form.email" placeholder="Email" prefix-icon="fas fa-user"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input
-            v-model="model.password"
+            v-model="form.password"
             placeholder="Password"
             type="password"
             prefix-icon="fas fa-lock"
@@ -35,7 +31,7 @@
           >
         </el-form-item>
         <div>
-          <router-link to="/signup">Register a new Account</router-link>
+          <router-link to="/signup">Sign up a new Account</router-link>
         </div>
         <div>
           <router-link to="/forgotpassword">Forgot password ?</router-link>
@@ -57,15 +53,15 @@ interface LoginType extends Vue {
 @Component
 export default class Login extends Vue {
   @Action("user/Login") Login: any;
-  @State(state => state.user.token) Token: any;
+  @State((state) => state.user.token) Token: any;
 
   $refs!: {
     form: LoginType;
   };
 
-  model: any = {
+  form: any = {
     email: "",
-    password: ""
+    password: "",
   };
   loading = false;
   rules: any = {
@@ -73,22 +69,22 @@ export default class Login extends Vue {
       {
         required: true,
         message: "Please input email address",
-        trigger: "blur"
+        trigger: "blur",
       },
       {
         type: "email",
         message: "Please input correct email address",
-        trigger: ["blur", "change"]
-      }
+        trigger: ["blur", "change"],
+      },
     ],
     password: [
       { required: true, message: "Password is required", trigger: "blur" },
       {
         min: 5,
         message: "Password length should be at least 5 characters",
-        trigger: "blur"
-      }
-    ]
+        trigger: "blur",
+      },
+    ],
   };
 
   beforeMount(): void {
@@ -103,12 +99,10 @@ export default class Login extends Vue {
       return;
     }
     this.loading = true;
-    await this.Login(this.model)
+    await this.Login(this.form)
       .then((data: any) => {
         if (data.status === serverstatus.SUCCESS) {
-          (this as any).$axios.defaults.headers[
-            "Authorization"
-          ] = `Bearer ${data.user.token}`;
+          (this as any).$axios.defaults.headers["Authorization"] = `Bearer ${data.user.token}`;
           this.$message.success(data.msg);
           // this.$router.push("/");
           window.location.reload();
