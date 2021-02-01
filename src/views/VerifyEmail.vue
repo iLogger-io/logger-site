@@ -10,14 +10,14 @@ import { Component, Vue } from "vue-property-decorator";
 import serverstatus from "@/utils/status";
 
 @Component({
-  components: {}
+  components: {},
 })
 export default class LoginPage extends Vue {
   @Action("user/VerifyEmail") VerifyEmail: any;
 
   beforeMount(): void {
     this.VerifyEmail({
-      VerifyEmailId: this.$route.query.id
+      VerifyEmailId: this.$route.query.id,
     })
       .then((data: any) => {
         if (data.status === serverstatus.SUCCESS) {
@@ -27,7 +27,7 @@ export default class LoginPage extends Vue {
           this.$message.error(data.msg);
         }
       })
-      .catch((error: any) => {
+      .catch((error: unknown) => {
         console.log(error);
       });
   }

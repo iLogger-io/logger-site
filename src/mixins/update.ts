@@ -9,7 +9,7 @@ export default class Mixin extends Vue {
   created() {
     // Listen for our custom event from the SW registration
     document.addEventListener("swUpdated", this.updateAvailable, {
-      once: true
+      once: true,
     });
 
     // Prevent multiple refreshes
@@ -28,7 +28,7 @@ export default class Mixin extends Vue {
 
   // Called when the user accepts the update
   refreshApp() {
-    console.log("refreshApp")
+    console.log("refreshApp");
     this.updateExists = false;
     // Make sure we only send a 'skip waiting' message if the SW is waiting
     if (!this.registration || !this.registration.waiting) return;

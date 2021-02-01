@@ -1,10 +1,6 @@
 <template>
   <el-container style="height: 100vh; border: 1px solid #eee">
-    <el-drawer
-      title="Notifications"
-      :visible.sync="drawerNotifications"
-      :with-header="true"
-    >
+    <el-drawer title="Notifications" :visible.sync="drawerNotifications" :with-header="true">
       <NotificationComponent
         v-for="(item, index) in Notifications"
         v-bind:key="index"
@@ -23,31 +19,31 @@
       <i class="fas fa-spinner fa-spin fa-3x"></i>
     </el-dialog>
     <el-aside
-      class="device-list"
+      class="client-list"
       width="200px"
-      style="background-color: rgb(238, 241, 246); border-right: 1px solid rgba(120, 153, 182, 0.507); color: #333;"
+      style="
+        background-color: rgb(238, 241, 246);
+        border-right: 1px solid rgba(120, 153, 182, 0.507);
+        color: #333;
+      "
     >
-      <div v-if="DeviceListMenuShow">
+      <div v-if="ClientListMenuShow">
         <el-menu
-          :default-active="activeIndexSelectDevice"
+          :default-active="activeIndexSelectClient"
           :default-openeds="['1']"
-          @select="handleSelectDevice"
+          @select="handleSelectClient"
         >
           <el-submenu index="1">
-            <template slot="title"
-              >Device list <i class="fas fa-microchip"></i
-            ></template>
+            <template slot="title">Client list <i class="fas fa-microchip"></i></template>
             <el-tooltip
               placement="right"
               effect="light"
-              v-for="(item, index) in DeviceID"
+              v-for="(item, index) in ClientID"
               v-bind:item="item"
               v-bind:key="item.id"
             >
-              <div slot="content">Device ID:<br />{{ item.id }}</div>
-              <el-menu-item v-bind:index="`1-${index}`">{{
-                item.name
-              }}</el-menu-item>
+              <div slot="content">Client ID:<br />{{ item.id }}</div>
+              <el-menu-item v-bind:index="`1-${index}`">{{ item.name }}</el-menu-item>
             </el-tooltip>
           </el-submenu>
         </el-menu>
@@ -59,33 +55,21 @@
         <div class="header-left">
           <div class="iconblock-small">
             <el-tooltip placement="top">
-              <div slot="content" style="font-size:14px">
-                Register new device
-              </div>
-              <el-popover
-                placement="bottom"
-                width="200"
-                v-model="VisibleRegisterDevice"
-              >
-                <p>Register new device</p>
+              <div slot="content" style="font-size: 14px">Register new client</div>
+              <el-popover placement="bottom" width="200" v-model="VisibleRegisterClient">
+                <p>Register new client</p>
                 <div style="text-align: right; margin: 0">
                   <el-input
                     size="mini"
                     placeholder="Please give it a short name"
-                    style="margin: 0px 40px 20px 0px;"
-                    v-model="InputRegisterDevice"
+                    style="margin: 0px 40px 20px 0px"
+                    v-model="InputRegisterClient"
                     clearable
                   ></el-input>
-                  <el-button
-                    size="mini"
-                    type="text"
-                    @click="VisibleRegisterDevice = false"
+                  <el-button size="mini" type="text" @click="VisibleRegisterClient = false"
                     >cancel</el-button
                   >
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="handleRegisterDevice()"
+                  <el-button type="primary" size="mini" @click="handleRegisterClient()"
                     >confirm</el-button
                   >
                 </div>
@@ -102,13 +86,13 @@
 
           <div class="iconblock-small">
             <el-tooltip placement="top">
-              <div slot="content" style="font-size:14px">Remove device</div>
+              <div slot="content" style="font-size: 14px">Remove client</div>
               <el-button
                 type="primary"
                 icon="fas fa-minus-circle"
                 circle
                 size="mini"
-                @click="handleRemoveDevice()"
+                @click="handleRemoveClient()"
               ></el-button>
             </el-tooltip>
           </div>
@@ -125,7 +109,7 @@
           </div>
           <div class="iconblock-small">
             <el-tooltip placement="top">
-              <div slot="content" style="font-size:14px">Notifications</div>
+              <div slot="content" style="font-size: 14px">Notifications</div>
               <el-button
                 type="primary"
                 icon="fas fa-bell"
@@ -137,15 +121,15 @@
           </div>
         </div>
       </div>
-      <el-main style="padding: 0; background-color: #002b35; display: flex;">
+      <el-main style="padding: 0; background-color: #002b35; display: flex">
         <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
         <WindowLog
-          v-for="item in DeviceID"
+          v-for="item in ClientID"
           v-bind:key="item.id"
-          :deviceid="item.id"
-          :currentdeviceid="DeviceIDSelected"
-          v-show="DeviceIDSelected === item.id"
-          v-if="checkRemoveDevice()"
+          :clientid="item.id"
+          :currentclientid="ClientIDSelected"
+          v-show="ClientIDSelected === item.id"
+          v-if="checkRemoveClient()"
         >
         </WindowLog>
       </el-main>
@@ -164,53 +148,53 @@ import update from "@/mixins/update";
 @Component({
   components: {
     WindowLog,
-    NotificationComponent
+    NotificationComponent,
   },
-  mixins: [update]
+  mixins: [update],
 })
 export default class HomeMain extends Vue {
-  @Action("device/Register") RegisterDevice: any;
-  @Action("device/Remove") RemoveDevice: any;
-  @Action("device/List") ListDevice: any;
-  @Getter("device/DeviceID") DeviceID: any;
-  @Action("device/RemoveDeviceID") RemoveDeviceID: any;
-  @Action("device/UpdateDeviceLog") UpdateDeviceLog: any;
-  @Getter("device/DeviceLog") DeviceLog: any;
+  @Action("client/Register") RegisterClient: any;
+  @Action("client/Remove") RemoveClient: any;
+  @Action("client/List") ListClient: any;
+  @Getter("client/ClientID") ClientID: any;
+  @Action("client/RemoveClientID") RemoveClientID: any;
+  @Action("client/UpdateClientLog") UpdateClientLog: any;
+  @Getter("client/ClientLog") ClientLog: any;
   @Getter("ui/UIstatus") UIstatus: any;
   @Getter("ui/Notifications") Notifications: any;
-  @Getter("device/DeviceSettings") DeviceSettings: any;
+  @Getter("client/ClientSettings") ClientSettings: any;
 
-  activeIndexSelectDevice = "0";
-  VisibleRegisterDevice = false;
-  InputRegisterDevice = "";
-  DeviceIDSelected = "";
-  DeviceListMenuShow = true;
+  activeIndexSelectClient = "0";
+  VisibleRegisterClient = false;
+  InputRegisterClient = "";
+  ClientIDSelected = "";
+  ClientListMenuShow = true;
   drawerNotifications = false;
   msg = "Push";
 
-  @Watch("DeviceID")
-  onPropertyChanged(deviceid: any) {
-    for (const i in deviceid) {
-      this.UpdateDeviceLog({
-        deviceid: deviceid[i].id,
-        logs: null
+  @Watch("ClientID")
+  onPropertyChanged(clientid: any) {
+    for (const i in clientid) {
+      this.UpdateClientLog({
+        clientid: clientid[i].id,
+        logs: null,
       });
     }
   }
 
   beforeMount(): void {
-    this.ListDevice();
+    this.ListClient();
   }
 
-  handleRegisterDevice() {
-    this.RegisterDevice(this.InputRegisterDevice);
-    this.InputRegisterDevice = "";
-    this.VisibleRegisterDevice = false;
+  handleRegisterClient() {
+    this.RegisterClient(this.InputRegisterClient);
+    this.InputRegisterClient = "";
+    this.VisibleRegisterClient = false;
   }
 
   handleTest() {
-    // console.log("DeviceSettings", this.DeviceSettings);
-    console.log(this.DeviceLog);
+    // console.log("ClientSettings", this.ClientSettings);
+    console.log(this.ClientLog);
   }
 
   handleNotificationsBT() {
@@ -219,36 +203,36 @@ export default class HomeMain extends Vue {
     console.log("Notifications", this.Notifications);
   }
 
-  handleSelectDevice(index: string) {
+  handleSelectClient(index: string) {
     const numberIndex = parseInt(index.split("-")[1]);
-    this.DeviceIDSelected = this.DeviceID[numberIndex].id;
+    this.ClientIDSelected = this.ClientID[numberIndex].id;
   }
 
-  RerenderDeviceListMenu() {
-    this.DeviceListMenuShow = false;
+  RerenderClientListMenu() {
+    this.ClientListMenuShow = false;
     this.$nextTick(() => {
-      this.DeviceListMenuShow = true;
+      this.ClientListMenuShow = true;
       this.$nextTick();
     });
   }
 
-  checkRemoveDevice() {
-    const deviceArray = [];
-    for (const id in this.DeviceLog) {
-      deviceArray.push(id);
+  checkRemoveClient() {
+    const clientArray = [];
+    for (const id in this.ClientLog) {
+      clientArray.push(id);
     }
-    return deviceArray.includes(this.DeviceIDSelected);
+    return clientArray.includes(this.ClientIDSelected);
   }
 
-  async handleRemoveDevice() {
-    this.activeIndexSelectDevice = "0";
-    await this.RemoveDevice(this.DeviceIDSelected).then((data: any) => {
+  async handleRemoveClient() {
+    this.activeIndexSelectClient = "0";
+    await this.RemoveClient(this.ClientIDSelected).then((data: any) => {
       if (data.status === serverstatus.SUCCESS) {
-        this.RemoveDeviceID(this.DeviceIDSelected);
+        this.RemoveClientID(this.ClientIDSelected);
       }
     });
-    this.DeviceIDSelected = "";
-    this.RerenderDeviceListMenu();
+    this.ClientIDSelected = "";
+    this.RerenderClientListMenu();
   }
 }
 </script>

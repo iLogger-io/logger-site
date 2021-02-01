@@ -23,11 +23,11 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component({
   components: {
-    Login
-  }
+    Login,
+  },
 })
 export default class LoginPage extends Vue {
-  @State(state => state.user.token) Token: any;
+  @State((state) => state.user.token) Token: any;
 
   beforeMount(): void {
     if (this.Token !== null && this.Token !== "") {

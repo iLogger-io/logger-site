@@ -8,7 +8,7 @@
         {{ getText(type) }}
       </el-col>
     </el-row>
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 10px">
       {{ msg }}
     </div>
   </div>

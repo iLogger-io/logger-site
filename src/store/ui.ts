@@ -5,9 +5,9 @@ interface State {
 
 const state = {
   UIstatus: {
-    InternetDialog: false
+    InternetDialog: false,
   },
-  Notifications: []
+  Notifications: [],
 };
 
 const mutations = {
@@ -16,7 +16,7 @@ const mutations = {
   },
   UPDATE_NOTIFICATION(state: State, data: any) {
     state.Notifications.push(data);
-  }
+  },
 };
 
 const actions = {
@@ -26,12 +26,12 @@ const actions = {
 
   PushNotification({ commit }: any, data: any) {
     commit("UPDATE_NOTIFICATION", data);
-  }
+  },
 };
 
 const getters = {
   UIstatus: (state: State) => state.UIstatus,
-  Notifications: (state: State) => state.Notifications
+  Notifications: (state: State) => state.Notifications,
 };
 
 export const ui = {
@@ -39,5 +39,5 @@ export const ui = {
   state,
   mutations,
   actions,
-  getters
+  getters,
 };

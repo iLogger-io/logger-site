@@ -2,18 +2,18 @@ import serverstatus from "@/utils/status";
 import ColorCode from "@/utils/color-code";
 
 interface State {
-  DeviceID: any;
-  DeviceLog: any;
+  ClientID: any;
+  ClientLog: any;
   NewLog: any;
-  DeviceSettings: any;
+  ClientSettings: any;
 }
 
 const state = {
-  DeviceID: [],
-  DeviceLog: {},
+  ClientID: [],
+  ClientLog: {},
   LogStyle: {},
   NewLog: {},
-  DeviceSettings: {}
+  ClientSettings: {},
 };
 
 function ColorParser(text: string) {
@@ -40,9 +40,9 @@ function ColorParser(text: string) {
 
 const mutations = {
   SET_DEVICE_ID(state: State, data: any) {
-    state.DeviceID = data;
+    state.ClientID = data;
   },
-  UPDATE_DEVICE_LOG(state: State, { deviceid: deviceid, logs: data }: any) {
+  UPDATE_DEVICE_LOG(state: State, { clientid: clientid, logs: data }: any) {
     if (data !== null) {
       for (let i = 0; i < data.length; i++) {
         const ret = ColorParser(data[i].log);
@@ -52,37 +52,34 @@ const mutations = {
     }
 
     /* This command is not rerender in vue component */
-    // state.DeviceLog[deviceid] = data;
+    // state.ClientLog[clientid] = data;
 
-    /* Using Vue.set to make sure DeviceLog state update to vue component */
-    (this as any)._vm.$set(state.DeviceLog, deviceid, data);
+    /* Using Vue.set to make sure ClientLog state update to vue component */
+    (this as any)._vm.$set(state.ClientLog, clientid, data);
   },
-  REMOVE_DEVICE_ID(state: State, deviceid: string) {
-    (this as any)._vm.$delete(state.DeviceLog, deviceid);
+  REMOVE_DEVICE_ID(state: State, clientid: string) {
+    (this as any)._vm.$delete(state.ClientLog, clientid);
   },
   UPDATE_NEW_LOG(state: State, data: any) {
     state.NewLog = data;
   },
-  UPDATE_SETTINGS(
-    state: State,
-    { deviceid: deviceid, settings: settings }: any
-  ) {
-    (this as any)._vm.$set(state.DeviceSettings, deviceid, settings);
-  }
+  UPDATE_SETTINGS(state: State, { clientid: clientid, settings: settings }: any) {
+    (this as any)._vm.$set(state.ClientSettings, clientid, settings);
+  },
 };
 
 const actions = {
   List({ commit }: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .get("/api/v1/device/list")
-        .then(function(response: any) {
+        .get("/api/v1/client/list")
+        .then(function (response: any) {
           if (response.data.status === serverstatus.SUCCESS) {
-            commit("SET_DEVICE_ID", response.data.list);
+            commit("SET_DEVICE_ID", response.data.payload.list);
           }
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
@@ -90,93 +87,93 @@ const actions = {
   Register({ dispatch }: any, name: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/register", { name: name })
+        .post("/api/v1/client/register", { name: name })
         .then((response: any) => {
           dispatch("List");
           if (response.data.status === serverstatus.SUCCESS) {
             (this as any)._vm.$notify({
-              title: "Register Device",
+              title: "Register Client",
               message: response.data.msg,
-              type: "success"
+              type: "success",
             });
           } else {
             (this as any)._vm.$notify({
-              title: "Register Device",
+              title: "Register Client",
               message: response.data.msg,
-              type: "error"
+              type: "error",
             });
           }
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
-  Remove({ dispatch }: any, deviceid: any) {
+  Remove({ dispatch }: any, clientid: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/remove", { deviceid: deviceid })
+        .post("/api/v1/client/remove", { clientid: clientid })
         .then((response: any) => {
           dispatch("List");
           if (response.data.status === serverstatus.SUCCESS) {
             (this as any)._vm.$notify({
-              title: "Remove Device",
+              title: "Remove Client",
               message: response.data.msg,
-              type: "success"
+              type: "success",
             });
           } else {
             (this as any)._vm.$notify({
-              title: "Remove Device",
+              title: "Remove Client",
               message: response.data.msg,
-              type: "error"
+              type: "error",
             });
           }
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
-  LoadSettings({ commit }: any, deviceid: any) {
+  LoadSettings({ commit }: any, clientid: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/settings", { deviceid: deviceid })
+        .post("/api/v1/client/settings", { clientid: clientid })
         .then((response: any) => {
           resolve(response.data);
           if (response.data.status === serverstatus.SUCCESS) {
             commit("UPDATE_SETTINGS", {
-              deviceid: deviceid,
-              settings: response.data.settings
+              clientid: clientid,
+              settings: response.data.settings,
             });
           }
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
-  SaveSettings(_: any, { deviceid: deviceid, settings: settings }: any) {
+  SaveSettings(_: any, { clientid: clientid, settings: settings }: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/savesettings", {
-          deviceid: deviceid,
-          settings: settings
+        .post("/api/v1/client/savesettings", {
+          clientid: clientid,
+          settings: settings,
         })
         .then((response: any) => {
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
-  UpdateDeviceLog({ commit }: any, data: any) {
+  UpdateClientLog({ commit }: any, data: any) {
     commit("UPDATE_DEVICE_LOG", data);
   },
-  RemoveDeviceID({ commit }: any, deviceid: string) {
-    commit("REMOVE_DEVICE_ID", deviceid);
+  RemoveClientID({ commit }: any, clientid: string) {
+    commit("REMOVE_DEVICE_ID", clientid);
   },
   GetLogs(_: any, body: any) {
     return new Promise((resolve, reject) => {
@@ -185,7 +182,7 @@ const actions = {
         .then((response: any) => {
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
@@ -193,49 +190,49 @@ const actions = {
   UpdateNewLogTrigger({ commit }: any, data: any) {
     commit("UPDATE_NEW_LOG", data);
   },
-  SendCommand(_: any, { deviceid: deviceid, command: command }: any) {
+  SendCommand(_: any, { clientid: clientid, command: command }: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/sendcommand", {
-          deviceid: deviceid,
-          command: command
+        .post("/api/v1/client/sendcommand", {
+          clientid: clientid,
+          command: command,
         })
         .then((response: any) => {
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
-  SendCommandline(_: any, { deviceid: deviceid, string: string }: any) {
+  SendCommandline(_: any, { clientid: clientid, string: string }: any) {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
-        .post("/api/v1/device/sendcommandline", {
-          deviceid: deviceid,
-          string: string
+        .post("/api/v1/client/sendcommandline", {
+          clientid: clientid,
+          string: string,
         })
         .then((response: any) => {
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
-  }
+  },
 };
 
 const getters = {
-  DeviceID: (state: State) => state.DeviceID,
-  DeviceLog: (state: State) => state.DeviceLog,
+  ClientID: (state: State) => state.ClientID,
+  ClientLog: (state: State) => state.ClientLog,
   NewLog: (state: State) => state.NewLog,
-  DeviceSettings: (state: State) => state.DeviceSettings
+  ClientSettings: (state: State) => state.ClientSettings,
 };
 
-export const device = {
+export const client = {
   namespaced: true,
   state,
   mutations,
   actions,
-  getters
+  getters,
 };

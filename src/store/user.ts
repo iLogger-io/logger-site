@@ -1,18 +1,21 @@
 import serverstatus from "@/utils/status";
+import Cookies from "js-cookie";
 
 interface State {
   token: any;
 }
 
 const state = {
-  token: localStorage.getItem("token") || ""
+  token: Cookies.get("token"),
 };
 
 const mutations = {
   SET_TOKEN(state: State, data: string) {
     state.token = data;
-    localStorage.setItem("token", data);
-  }
+    Cookies.set("token", data, {
+      expires: 30,
+    });
+  },
 };
 
 const actions = {
@@ -20,10 +23,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
         .post("/api/v1/auth/signup", JSON.stringify(body))
-        .then(function(response: any) {
+        .then(function (response: any) {
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
@@ -32,13 +35,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
         .post("/api/v1/auth/login", JSON.stringify(body))
-        .then(function(response: any) {
+        .then(function (response: any) {
           if (response.data.status === serverstatus.SUCCESS) {
-            commit("SET_TOKEN", response.data.user.token);
+            commit("SET_TOKEN", response.data.payload.access_token);
           }
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
@@ -47,25 +50,25 @@ const actions = {
     return new Promise((resolve, reject) => {
       (this as any)._vm.$axios
         .post("/api/v1/auth/verifyemail", JSON.stringify(body))
-        .then(function(response: any) {
+        .then(function (response: any) {
           if (response.data.status === serverstatus.SUCCESS) {
             console.log("OK");
           }
           console.log(response.data);
           resolve(response.data);
         })
-        .catch(function(error: any) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   },
   SetToken({ commit }: any, token: string) {
     commit("SET_TOKEN", token);
-  }
+  },
 };
 
 const getters = {
-  Token: (state: State) => state.token
+  Token: (state: State) => state.token,
 };
 
 export const user = {
@@ -73,5 +76,5 @@ export const user = {
   state,
   mutations,
   actions,
-  getters
+  getters,
 };

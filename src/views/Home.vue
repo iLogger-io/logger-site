@@ -4,38 +4,26 @@
     <div class="navigation">
       <div class="navitop">
         <div class="iconblock">
-          <i class="fas fa-chart-pie fa-2x" style="color: white;"></i>
+          <i class="fas fa-chart-pie fa-2x" style="color: white"></i>
         </div>
       </div>
       <div class="navibot">
         <div class="iconblock">
           <el-dropdown @command="handleUserDropdown">
             <div>
-              <i
-                class="fas fa-user-circle fa-3x"
-                style="color: white; font-size: 38px;"
-              ></i>
+              <i class="fas fa-user-circle fa-3x" style="color: white; font-size: 38px"></i>
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="profile"
-                ><i
-                  class="fas fa-user fa-lg"
-                  style="color: rgb(2, 117, 216);"
-                ></i
-                >User Profile</el-dropdown-item
+                ><i class="fas fa-user fa-lg" style="color: rgb(2, 117, 216)"></i>User
+                Profile</el-dropdown-item
               >
               <el-dropdown-item command="settings"
-                ><i
-                  class="fas fa-cogs fa-lg"
-                  style="color: rgb(2, 117, 216);"
-                ></i
+                ><i class="fas fa-cogs fa-lg" style="color: rgb(2, 117, 216)"></i
                 >Settings</el-dropdown-item
               >
               <el-dropdown-item command="logout"
-                ><i
-                  class="fas fa-sign-out-alt fa-lg"
-                  style="color: rgb(2, 117, 216);"
-                ></i
+                ><i class="fas fa-sign-out-alt fa-lg" style="color: rgb(2, 117, 216)"></i
                 >Logout</el-dropdown-item
               >
             </el-dropdown-menu>
@@ -52,21 +40,27 @@
 <script lang="ts">
 import { Action } from "vuex-class";
 import { Component, Vue } from "vue-property-decorator";
+import Cookies from "js-cookie";
 import HomeMain from "@/components/HomeMain.vue";
 
 @Component({
   components: {
-    HomeMain
-  }
+    HomeMain,
+  },
 })
 export default class Home extends Vue {
   @Action("user/SetToken") SetToken: any;
-  handleUserDropdown(command: string) {
+  @Action("ws/InitWs") InitWs: any;
+
+  beforeMount(): void {
+    this.InitWs();
+  }
+
+  async handleUserDropdown(command: string) {
     switch (command) {
       case "logout":
-        localStorage.removeItem("token");
-        this.SetToken("");
-        this.$router.push("/login");
+        await Cookies.remove("token");
+        window.location.reload();
         break;
     }
   }

@@ -135,14 +135,15 @@ export default class Signup extends Vue {
     if (!valid) {
       return;
     }
+
     if (this.model.password !== this.model.passwordConfirm) {
       return;
     }
 
-    delete this.model.passwordConfirm;
     this.loading = true;
     await this.Signup(this.model)
       .then((data: any) => {
+        console.log(data);
         if (data.status === 0) {
           this.$message.success(data.msg);
           this.$router.push("/login");

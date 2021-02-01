@@ -4,7 +4,7 @@
       <el-collapse accordion>
         <el-collapse-item name="1">
           <template slot="title">
-            <i class="fas fa-search" style="margin: 0 4px;"></i>
+            <i class="fas fa-search" style="margin: 0 4px"></i>
             <div>Query</div>
           </template>
           <div class="chart-container">
@@ -29,7 +29,7 @@
       <div class="mainlogfix"></div>
       <el-button
         class="settingsFix"
-        style="top: 10px; right: 10px;"
+        style="top: 10px; right: 10px"
         type="primary"
         icon="fas fa-tools"
         circle
@@ -37,19 +37,11 @@
         @click="handleSettingsBT()"
       ></el-button>
 
-      <div
-        class="settingsFix"
-        style="bottom: 10px; right: 10px;"
-        @click="handleScrollToBottom()"
-      >
+      <div class="settingsFix" style="bottom: 10px; right: 10px" @click="handleScrollToBottom()">
         <i class="fas fa-angle-down fa-3x"></i>
       </div>
 
-      <el-dialog
-        title="Settings"
-        :visible.sync="SettingsBTdialogVisible"
-        width="40%"
-      >
+      <el-dialog title="Settings" :visible.sync="SettingsBTdialogVisible" width="40%">
         <el-form
           ref="Settingsform"
           :model="Settingsform"
@@ -57,42 +49,31 @@
           size="mini"
           :label-position="'left'"
         >
-          <el-form-item label="Device ID">{{ deviceid }}</el-form-item>
+          <el-form-item label="Client ID">{{ clientid }}</el-form-item>
           <el-form-item label="Push Notifications:"></el-form-item>
           <el-form-item label="Email">
             <el-col :span="3">
-              <el-switch
-                v-model="Settingsform.PushNotifications.Email"
-              ></el-switch>
+              <el-switch v-model="Settingsform.PushNotifications.Email"></el-switch>
             </el-col>
           </el-form-item>
           <el-form-item label="Browser">
             <el-col :span="3">
-              <el-switch
-                v-model="Settingsform.PushNotifications.Browser"
-              ></el-switch>
+              <el-switch v-model="Settingsform.PushNotifications.Browser"></el-switch>
             </el-col>
           </el-form-item>
           <el-form-item label="Trigger Events:"></el-form-item>
           <el-form-item label="Error Log">
             <el-col :span="1">
-              <el-checkbox
-                v-model="Settingsform.TriggerEvents.ErrorLog"
-              ></el-checkbox>
+              <el-checkbox v-model="Settingsform.TriggerEvents.ErrorLog"></el-checkbox>
             </el-col>
           </el-form-item>
           <el-form-item label="Warning Log">
             <el-col :span="1">
-              <el-checkbox
-                v-model="Settingsform.TriggerEvents.WarningLog"
-              ></el-checkbox>
+              <el-checkbox v-model="Settingsform.TriggerEvents.WarningLog"></el-checkbox>
             </el-col>
           </el-form-item>
           <el-form-item label="Match Case">
-            <el-input
-              size="mini"
-              v-model="Settingsform.TriggerEvents.Matchcase"
-            ></el-input>
+            <el-input size="mini" v-model="Settingsform.TriggerEvents.Matchcase"></el-input>
           </el-form-item>
           <el-form-item label="Regex">
             <el-input
@@ -106,9 +87,7 @@
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="SettingsBTdialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="handleSaveSettings()">
-            Save
-          </el-button>
+          <el-button type="primary" @click="handleSaveSettings()"> Save </el-button>
         </span>
       </el-dialog>
       <div class="windowlogmain" ref="windowlogref" @scroll="handleScroll">
@@ -116,7 +95,7 @@
           <div
             class="timelogchild"
             ref="timeref"
-            v-for="item in DeviceLog[deviceid]"
+            v-for="item in ClientLog[clientid]"
             v-bind:key="item._id"
           >
             {{ HourMinuteSecondsOnly(item.time) }}
@@ -126,7 +105,7 @@
           <PRE
             class="log"
             ref="logref"
-            v-for="(item, index) in DeviceLog[deviceid]"
+            v-for="(item, index) in ClientLog[clientid]"
             v-bind:style="item.style"
             v-bind:key="item._id"
           >
@@ -137,33 +116,20 @@
     </div>
     <div class="windowlogCommand">
       <div class="CommandLine">
-        <el-row
-          type="flex"
-          class="row-bg"
-          justify="start"
-          style="margin: 10px 0 0 0;"
-        >
+        <el-row type="flex" class="row-bg" justify="start" style="margin: 10px 0 0 0">
           <el-col :span="4"
-            ><el-checkbox
-              v-model="Newline.CR"
-              label="CR \r"
-              name="type"
-            ></el-checkbox
+            ><el-checkbox v-model="Newline.CR" label="CR \r" name="type"></el-checkbox
           ></el-col>
           <el-col :span="10"
-            ><el-checkbox
-              v-model="Newline.LF"
-              label="LF \n"
-              name="type"
-            ></el-checkbox
+            ><el-checkbox v-model="Newline.LF" label="LF \n" name="type"></el-checkbox
           ></el-col>
         </el-row>
         <el-input
           type="textarea"
           :rows="4"
-          placeholder="Send command to device"
+          placeholder="Send command to client"
           v-model="Commandline"
-          style="margin: 10px 0;"
+          style="margin: 10px 0"
         >
         </el-input>
         <el-button
@@ -201,24 +167,24 @@
 import { Action, Getter } from "vuex-class";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import serverstatus from "../utils/status";
-import { num2buf } from "../utils/convert";
 import Chart from "chart.js";
+import globalVar from "../lib/global_var";
 
 @Component({
-  components: {}
+  components: {},
 })
 export default class WindowLog extends Vue {
-  @Prop() private deviceid!: string;
-  @Prop() private currentdeviceid!: string;
-  @Getter("device/DeviceLog") DeviceLog: any;
-  @Getter("device/NewLog") NewLog: any;
-  @Getter("device/DeviceSettings") DeviceSettings: any;
-  @Action("device/GetLogs") GetLogs: any;
-  @Action("device/UpdateDeviceLog") UpdateDeviceLog: any;
-  @Action("device/LoadSettings") LoadSettings: any;
-  @Action("device/SaveSettings") SaveSettings: any;
-  @Action("device/SendCommand") SendCommand: any;
-  @Action("device/SendCommandline") SendCommandline: any;
+  @Prop() private clientid!: string;
+  @Prop() private currentclientid!: string;
+  @Getter("client/ClientLog") ClientLog: any;
+  @Getter("client/NewLog") NewLog: any;
+  @Getter("client/ClientSettings") ClientSettings: any;
+  @Action("client/GetLogs") GetLogs: any;
+  @Action("client/UpdateClientLog") UpdateClientLog: any;
+  @Action("client/LoadSettings") LoadSettings: any;
+  @Action("client/SaveSettings") SaveSettings: any;
+  @Action("client/SendCommand") SendCommand: any;
+  @Action("client/SendCommandline") SendCommandline: any;
 
   InitLogValue = true;
   scrollPosition = 0;
@@ -230,19 +196,19 @@ export default class WindowLog extends Vue {
   Settingsform = {
     PushNotifications: {
       Email: false,
-      Browser: false
+      Browser: false,
     },
     TriggerEvents: {
       ErrorLog: false,
       WarningLog: false,
       Matchcase: "",
-      Regex: ""
-    }
+      Regex: "",
+    },
   };
 
   Newline = {
     CR: false,
-    LF: true
+    LF: true,
   };
 
   barChartData = {
@@ -251,25 +217,25 @@ export default class WindowLog extends Vue {
       {
         label: "Dataset 1",
         backgroundColor: "rgba(79, 226, 21, 0.5)",
-        data: [1, 5, 1, 10, 3, 4, 6]
+        data: [1, 5, 1, 10, 3, 4, 6],
       },
       {
         label: "Dataset 2",
         backgroundColor: "rgba(255, 251, 10, 0.5)",
-        data: [3, 2, 7, 9, 9, 1, 2]
+        data: [3, 2, 7, 9, 9, 1, 2],
       },
       {
         label: "Dataset 3",
         backgroundColor: "rgba(209, 5, 9, 0.5)",
-        data: [3, 1, 2, 5, 9, 8, 7]
-      }
-    ]
+        data: [3, 1, 2, 5, 9, 8, 7],
+      },
+    ],
   };
 
-  @Watch("currentdeviceid")
-  onPropertyChanged(currentdeviceid: any) {
+  @Watch("currentclientid")
+  onPropertyChanged(currentclientid: any) {
     if (this.InitLogValue) {
-      if (this.deviceid === currentdeviceid) {
+      if (this.clientid === currentclientid) {
         this.InitLog();
         this.InitLogValue = false;
       }
@@ -277,8 +243,8 @@ export default class WindowLog extends Vue {
   }
 
   @Watch("NewLog")
-  onPropertyChanged2(NewLog: any) {
-    if (this.deviceid === NewLog.deviceid) {
+  onPropertyChanged2(data: any) {
+    if (this.clientid === data.ClientId) {
       for (const i in this.$refs!.logref) {
         const LogsHeight = window
           .getComputedStyle((this as any).$refs!.logref[i])
@@ -286,24 +252,24 @@ export default class WindowLog extends Vue {
         (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
       }
 
+      console.log("ClientLog", this.ClientLog);
+
       /* Scroll to bottom */
-      if (Object.keys(this.DeviceLog[this.deviceid]).length > 0) {
-        (this as any).$refs.logref[
-          (this as any).$refs!.logref.length - 1
-        ].scrollIntoView();
+      if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
+        (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
       }
     }
   }
 
-  @Watch("DeviceSettings")
-  onPropertyChanged3(DeviceSettings: any) {
-    if (this.deviceid === this.currentdeviceid) {
-      this.Settingsform = DeviceSettings[this.deviceid];
+  @Watch("ClientSettings")
+  onPropertyChanged3(ClientSettings: any) {
+    if (this.clientid === this.currentclientid) {
+      this.Settingsform = ClientSettings[this.clientid];
     }
   }
 
   beforeMount(): void {
-    if (this.deviceid === this.currentdeviceid) {
+    if (this.clientid === this.currentclientid) {
       this.InitLog();
       this.InitLogValue = false;
     }
@@ -313,30 +279,30 @@ export default class WindowLog extends Vue {
     this.createChart("query-chart", this.barChartData);
   }
 
+  updated(): void {
+    globalVar.windowLogRendered = true;
+  }
+
   async handleScroll(event: any) {
     if (event.srcElement.scrollTop === 0) {
       console.log("onTOP");
 
       if (!this.ChechFullHistory) {
-        /* Get first Device id */
-        const lt = this.DeviceLog[this.deviceid][0]._id;
+        /* Get first Client id */
+        const lt = this.ClientLog[this.clientid][0]._id;
         let result: any;
-        await this.GetLogs({ deviceid: this.deviceid, lt: lt }).then(
-          (data: any) => {
-            result = data;
-          }
-        );
+        await this.GetLogs({ clientid: this.clientid, lt: lt }).then((data: any) => {
+          result = data;
+        });
 
         if (result.status === serverstatus.SUCCESS) {
           if (result.logs.length === 0) {
             this.ChechFullHistory = true;
           }
-          this.DeviceLog[this.deviceid] = result.logs.concat(
-            this.DeviceLog[this.deviceid]
-          );
-          await this.UpdateDeviceLog({
-            deviceid: this.deviceid,
-            logs: this.DeviceLog[this.deviceid]
+          this.ClientLog[this.clientid] = result.logs.concat(this.ClientLog[this.clientid]);
+          await this.UpdateClientLog({
+            clientid: this.clientid,
+            logs: this.ClientLog[this.clientid],
           });
 
           for (const i in this.$refs!.logref) {
@@ -352,29 +318,17 @@ export default class WindowLog extends Vue {
 
   async InitLog() {
     let result: any;
-    await this.GetLogs({ deviceid: this.deviceid }).then((data: any) => {
+
+    await this.GetLogs({ clientid: this.clientid }).then((data: any) => {
       result = data;
     });
 
-    // console.log("result", result)
     if (result!.status === serverstatus.SUCCESS) {
-      await this.UpdateDeviceLog({
-        deviceid: this.deviceid,
-        logs: result!.logs
+      await this.UpdateClientLog({
+        clientid: this.clientid,
+        logs: result!.logs,
       });
-      const jsonToken = JSON.stringify({
-        path: "/registerDeviceID",
-        deviceid: this.deviceid
-      });
-
-      const jsonTokenBuffer = Buffer.from(jsonToken);
-      const jsonTokenLengthBuffer = num2buf(jsonTokenBuffer.length);
-      const sendBuf = Buffer.concat(
-        [jsonTokenLengthBuffer, jsonTokenBuffer],
-        2 + jsonTokenBuffer.length
-      );
-      await (this as any).$wss.send(sendBuf);
-      this.LoadSettings(this.deviceid);
+      this.LoadSettings(this.clientid);
       this.updateLogStyle();
     }
   }
@@ -388,10 +342,8 @@ export default class WindowLog extends Vue {
     }
 
     /* Scroll to bottom */
-    if (Object.keys(this.DeviceLog[this.deviceid]).length > 0) {
-      (this as any).$refs.logref[
-        (this as any).$refs!.logref.length - 1
-      ].scrollIntoView();
+    if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
+      (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
     }
   }
 
@@ -402,16 +354,14 @@ export default class WindowLog extends Vue {
   handleSaveSettings() {
     this.SettingsBTdialogVisible = false;
     this.SaveSettings({
-      deviceid: this.deviceid,
-      settings: this.DeviceSettings[this.deviceid]
+      clientid: this.clientid,
+      settings: this.ClientSettings[this.clientid],
     });
   }
 
   handleScrollToBottom() {
-    if (Object.keys(this.DeviceLog[this.deviceid]).length > 0) {
-      (this as any).$refs.logref[
-        (this as any).$refs!.logref.length - 1
-      ].scrollIntoView();
+    if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
+      (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
     }
   }
 
@@ -431,8 +381,8 @@ export default class WindowLog extends Vue {
       }
 
       this.SendCommandline({
-        deviceid: this.deviceid,
-        string: str
+        clientid: this.clientid,
+        string: str,
       });
     }
   }
@@ -440,29 +390,17 @@ export default class WindowLog extends Vue {
   handleCommands(command: string) {
     console.log("handleCommands", command);
     this.SendCommand({
-      deviceid: this.deviceid,
-      command: command
+      clientid: this.clientid,
+      command: command,
     });
   }
 
   HourMinuteSecondsOnly(DateString: string) {
     const date = new Date(DateString);
-    const hours = date
-      .getHours()
-      .toString()
-      .padStart(2, "0");
-    const minutes = date
-      .getMinutes()
-      .toString()
-      .padStart(2, "0");
-    const seconds = date
-      .getSeconds()
-      .toString()
-      .padStart(2, "0");
-    const miliseconds = date
-      .getMilliseconds()
-      .toString()
-      .padStart(3, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+    const miliseconds = date.getMilliseconds().toString().padStart(3, "0");
     return `${hours}:${minutes}:${seconds}.${miliseconds}`;
   }
 
@@ -478,27 +416,27 @@ export default class WindowLog extends Vue {
       options: {
         title: {
           display: false,
-          text: "Chart.js Bar Chart - Stacked"
+          text: "Chart.js Bar Chart - Stacked",
         },
         tooltips: {
           mode: "index",
-          intersect: false
+          intersect: false,
         },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
           xAxes: [
             {
-              stacked: true
-            }
+              stacked: true,
+            },
           ],
           yAxes: [
             {
-              stacked: true
-            }
-          ]
-        }
-      }
+              stacked: true,
+            },
+          ],
+        },
+      },
     });
   }
 }

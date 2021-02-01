@@ -1,6 +1,6 @@
 function pushNotification(title: string, message: string) {
   if (Notification.permission === "granted") {
-    navigator.serviceWorker.getRegistration().then(function(reg) {
+    navigator.serviceWorker.getRegistration().then(function (reg) {
       if (reg == undefined) {
         console.log("[serviceWorker] only works online");
         return;
@@ -11,20 +11,20 @@ function pushNotification(title: string, message: string) {
         vibrate: [100, 50, 100],
         data: {
           dateOfArrival: Date.now(),
-          primaryKey: 1
+          primaryKey: 1,
         },
         actions: [
           {
             action: "explore",
             title: "Go to the site",
-            icon: "./static/img/checkmark.png"
+            icon: "./static/img/checkmark.png",
           },
           {
             action: "close",
             title: "Close the notification",
-            icon: "./static/img/xmark.png"
-          }
-        ]
+            icon: "./static/img/xmark.png",
+          },
+        ],
       };
       reg.showNotification(title, options);
     });

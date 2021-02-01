@@ -101,10 +101,9 @@ export default class Login extends Vue {
     this.loading = true;
     await this.Login(this.form)
       .then((data: any) => {
+        console.log(data);
         if (data.status === serverstatus.SUCCESS) {
-          (this as any).$axios.defaults.headers["Authorization"] = `Bearer ${data.user.token}`;
           this.$message.success(data.msg);
-          // this.$router.push("/");
           window.location.reload();
         } else {
           this.$message.error(data.msg);

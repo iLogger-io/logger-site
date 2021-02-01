@@ -7,6 +7,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 import VerifyEmail from "../views/VerifyEmail.vue";
+import Notfound from "../views/Notfound.vue";
 import guest from "../middleware/guest";
 import home from "../middleware/home";
 import auth from "../middleware/auth";
@@ -57,6 +58,11 @@ const routes: Array<RouteConfig> = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "*",
+    name: "NotFound",
+    component: Notfound,
   },
 ];
 

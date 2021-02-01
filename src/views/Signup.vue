@@ -22,8 +22,8 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component({
   components: {
-    Signup
-  }
+    Signup,
+  },
 })
 export default class SignupPage extends Vue {}
 </script>
