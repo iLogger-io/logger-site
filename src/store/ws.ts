@@ -1,6 +1,7 @@
 import { WSDataType } from "../types/type";
 import serverstatus from "../utils/status";
 import globalVar from "../lib/global_var";
+import pushNotificationBrowser from "../utils/pushNotification";
 
 interface State {
   WS: WebSocket | null;
@@ -31,6 +32,9 @@ const actions = {
         case "pushlog":
           dispatch("PushLog", message.payload);
           break;
+        case "push_notification":
+          dispatch("WSPushNotification", message.payload);
+          break;
       }
     };
     ws.onclose = (ev: CloseEvent) => {
@@ -58,7 +62,6 @@ const actions = {
       return;
     }
     globalVar.windowLogRendered = false;
-    console.log("PushLog");
 
     let gt = null;
     if (Object.values(rootState.client.ClientLog[data.ClientId]).length > 0) {
@@ -70,8 +73,6 @@ const actions = {
       { clientid: data.ClientId, gt: gt },
       { root: true },
     );
-    console.log(LogData.logs);
-    console.log(rootState.client.ClientLog);
     if (LogData.status === serverstatus.SUCCESS) {
       for (const i in LogData.logs) {
         rootState.client.ClientLog[data.ClientId].push(LogData.logs[i]);
@@ -86,6 +87,11 @@ const actions = {
         { ClientId: data.ClientId, unique: Date.now().toString() },
         { root: true },
       );
+    }
+  },
+  async WSPushNotification({ dispatch, rootState }: any, data: any) {
+    if (rootState.client.ClientSettings[data.ClientId].PushNotifications.Browser === true) {
+      pushNotificationBrowser("iLogger Notification", data.messages.msg);
     }
   },
 };

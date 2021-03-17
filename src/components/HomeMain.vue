@@ -104,6 +104,15 @@
               icon="fas fa-box"
               circle
               size="mini"
+              @click="handleTest()"
+            ></el-button>
+          </div>
+          <div class="iconblock-small">
+            <el-button
+              type="primary"
+              icon="fas fa-sync-alt"
+              circle
+              size="mini"
               @click="refreshApp()"
             ></el-button>
           </div>
@@ -194,7 +203,7 @@ export default class HomeMain extends Vue {
 
   handleTest() {
     // console.log("ClientSettings", this.ClientSettings);
-    console.log(this.ClientLog);
+    console.log("handleTest", this.ClientLog);
   }
 
   handleNotificationsBT() {

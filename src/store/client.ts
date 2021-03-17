@@ -169,6 +169,20 @@ const actions = {
         });
     });
   },
+  ClearLog(_: any, { clientid: clientid }: any) {
+    return new Promise((resolve, reject) => {
+      (this as any)._vm.$axios
+        .post("/api/v1/client/cleanlog", {
+          clientid: clientid,
+        })
+        .then((response: any) => {
+          resolve(response.data);
+        })
+        .catch(function (error: any) {
+          reject(error);
+        });
+    });
+  },
   UpdateClientLog({ commit }: any, data: any) {
     commit("UPDATE_DEVICE_LOG", data);
   },

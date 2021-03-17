@@ -28,7 +28,7 @@
       <div class="timelogfix"></div>
       <div class="mainlogfix"></div>
       <el-button
-        class="settingsFix"
+        class="IconFix"
         style="top: 10px; right: 10px"
         type="primary"
         icon="fas fa-tools"
@@ -37,7 +37,17 @@
         @click="handleSettingsBT()"
       ></el-button>
 
-      <div class="settingsFix" style="bottom: 10px; right: 10px" @click="handleScrollToBottom()">
+      <el-button
+        class="IconFix"
+        style="top: 50px; right: 10px"
+        type="primary"
+        icon="fas fa-eraser"
+        circle
+        size="mini"
+        @click="handleClearLog()"
+      ></el-button>
+
+      <div class="IconFix" style="bottom: 10px; right: 10px" @click="handleScrollToBottom()">
         <i class="fas fa-angle-down fa-3x"></i>
       </div>
 
@@ -183,6 +193,7 @@ export default class WindowLog extends Vue {
   @Action("client/UpdateClientLog") UpdateClientLog: any;
   @Action("client/LoadSettings") LoadSettings: any;
   @Action("client/SaveSettings") SaveSettings: any;
+  @Action("client/ClearLog") ClearLog: any;
   @Action("client/SendCommand") SendCommand: any;
   @Action("client/SendCommandline") SendCommandline: any;
 
@@ -251,8 +262,6 @@ export default class WindowLog extends Vue {
           .getPropertyValue("height");
         (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
       }
-
-      console.log("ClientLog", this.ClientLog);
 
       /* Scroll to bottom */
       if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
@@ -356,6 +365,21 @@ export default class WindowLog extends Vue {
     this.SaveSettings({
       clientid: this.clientid,
       settings: this.ClientSettings[this.clientid],
+    });
+  }
+
+  handleClearLog() {
+    this.ClearLog({
+      clientid: this.clientid,
+    }).then(async (data: any) => {
+      console.log(data);
+      if (data.status === serverstatus.SUCCESS) {
+        this.ClientLog[this.clientid] = null;
+        await this.UpdateClientLog({
+          clientid: this.clientid,
+          logs: this.ClientLog[this.clientid],
+        });
+      }
     });
   }
 
@@ -500,7 +524,7 @@ export default class WindowLog extends Vue {
       }
     }
 
-    .settingsFix {
+    .IconFix {
       z-index: 1001;
       position: absolute;
     }
