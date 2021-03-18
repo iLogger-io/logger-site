@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "local": "env-cmd -f .env.local vue-cli-service serve",
     "dev": "env-cmd -f .env.development vue-cli-service serve",
     "build:staging": "env-cmd -f .env.staging vue-cli-service build",
     "build": "env-cmd -f .env.production vue-cli-service build",

@@ -90,6 +90,7 @@
               size="mini"
               v-model="Settingsform.TriggerEvents.Regex"
               type="textarea"
+              placeholder="([A-Z])\w+"
               :rows="4"
             ></el-input>
           </el-form-item>
