@@ -197,6 +197,7 @@ export default class WindowLog extends Vue {
   SettingsBTdialogVisible = false;
   Commandline = "";
   QueryTime = "";
+  CurrentRefBottom: any;
 
   Settingsform = {
     PushNotifications: {
@@ -244,7 +245,6 @@ export default class WindowLog extends Vue {
         this.InitLog();
         this.InitLogValue = false;
       } else {
-        console.log("[currentclientid]:", this.currentclientid);
         if (Object.values(this.ClientLog[this.currentclientid]).length > 0) {
           const gt = this.ClientLog[this.currentclientid].slice(-1)[0]._id;
           let result: any;
@@ -261,17 +261,7 @@ export default class WindowLog extends Vue {
               logs: this.ClientLog[this.clientid],
             });
 
-            for (const i in this.$refs!.logref) {
-              const LogsHeight = window
-                .getComputedStyle((this as any).$refs!.logref[i])
-                .getPropertyValue("height");
-              (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
-            }
-          }
-
-          /* Scroll to bottom */
-          if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
-            (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
+            this.updateLogStyle(true);
           }
         }
       }
@@ -297,18 +287,8 @@ export default class WindowLog extends Vue {
             logs: this.ClientLog[this.clientid],
           });
 
-          for (const i in this.$refs!.logref) {
-            const LogsHeight = window
-              .getComputedStyle((this as any).$refs!.logref[i])
-              .getPropertyValue("height");
-            (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
-          }
+          this.updateLogStyle(true);
         }
-      }
-
-      /* Scroll to bottom */
-      if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
-        (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
       }
     }
   }
@@ -357,12 +337,7 @@ export default class WindowLog extends Vue {
             logs: this.ClientLog[this.clientid],
           });
 
-          for (const i in this.$refs!.logref) {
-            const LogsHeight = window
-              .getComputedStyle((this as any).$refs!.logref[i])
-              .getPropertyValue("height");
-            (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
-          }
+          this.updateLogStyle(false);
         }
       }
     }
@@ -381,11 +356,11 @@ export default class WindowLog extends Vue {
         logs: result!.logs,
       });
       this.LoadSettings(this.clientid);
-      this.updateLogStyle();
+      this.updateLogStyle(true);
     }
   }
 
-  updateLogStyle() {
+  updateLogStyle(saveCurrentRefBottom: boolean) {
     for (const i in this.$refs!.logref) {
       const LogsHeight = window
         .getComputedStyle((this as any).$refs!.logref[i])
@@ -396,6 +371,9 @@ export default class WindowLog extends Vue {
     /* Scroll to bottom */
     if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
       (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
+      if (saveCurrentRefBottom) {
+        this.CurrentRefBottom = (this as any).$refs.logref[(this as any).$refs!.logref.length - 1];
+      }
     }
   }
 
@@ -427,7 +405,9 @@ export default class WindowLog extends Vue {
   }
 
   handleScrollToBottom() {
-    if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
+    if (this.CurrentRefBottom !== undefined) {
+      this.CurrentRefBottom.scrollIntoView();
+    } else {
       (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
     }
   }
