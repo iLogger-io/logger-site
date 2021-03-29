@@ -62,32 +62,12 @@ const actions = {
       return;
     }
     globalVar.windowLogRendered = false;
-
-    let gt = null;
-    if (Object.values(rootState.client.ClientLog[data.ClientId]).length > 0) {
-      gt = rootState.client.ClientLog[data.ClientId].slice(-1)[0]._id;
-    }
-
-    const LogData = await dispatch(
-      "client/GetLogs",
-      { clientid: data.ClientId, gt: gt },
+    await dispatch(
+      "client/UpdateNewLogTrigger",
+      { ClientId: data.ClientId, unique: Date.now().toString() },
       { root: true },
     );
-    if (LogData.status === serverstatus.SUCCESS) {
-      for (const i in LogData.logs) {
-        rootState.client.ClientLog[data.ClientId].push(LogData.logs[i]);
-      }
-      await dispatch(
-        "client/UpdateClientLog",
-        { clientid: data.ClientId, logs: rootState.client.ClientLog[data.ClientId] },
-        { root: true },
-      );
-      await dispatch(
-        "client/UpdateNewLogTrigger",
-        { ClientId: data.ClientId, unique: Date.now().toString() },
-        { root: true },
-      );
-    }
+    // }
   },
   async WSPushNotification({ dispatch, rootState }: any, data: any) {
     if (rootState.client.ClientSettings[data.ClientId].PushNotifications.Browser === true) {

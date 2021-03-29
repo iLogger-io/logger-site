@@ -90,6 +90,7 @@
               size="mini"
               v-model="Settingsform.TriggerEvents.Regex"
               type="textarea"
+              placeholder="([A-Z])\w+"
               :rows="4"
             ></el-input>
           </el-form-item>
@@ -149,13 +150,6 @@
         ></el-button>
       </div>
       <div class="Macro">
-        <!-- <el-button
-          type="primary"
-          icon="fas fa-box"
-          circle
-          size="mini"
-          @click="handleTest()"
-        ></el-button> -->
         <el-form ref="Macroform" size="mini" :label-position="'left'">
           <el-form-item label="Reset">
             <el-col :span="1">
@@ -244,23 +238,72 @@ export default class WindowLog extends Vue {
   };
 
   @Watch("currentclientid")
-  onPropertyChanged(currentclientid: any) {
-    if (this.InitLogValue) {
-      if (this.clientid === currentclientid) {
+  async onPropertyChanged(currentclientid: any) {
+    if (this.clientid === currentclientid) {
+      if (this.InitLogValue) {
         this.InitLog();
         this.InitLogValue = false;
+      } else {
+        console.log("[currentclientid]:", this.currentclientid);
+        if (Object.values(this.ClientLog[this.currentclientid]).length > 0) {
+          const gt = this.ClientLog[this.currentclientid].slice(-1)[0]._id;
+          let result: any;
+          await this.GetLogs({ clientid: this.clientid, gt: gt }).then((data: any) => {
+            result = data;
+          });
+          if (result.status === serverstatus.SUCCESS) {
+            if (result.logs.length === 0) {
+              this.ChechFullHistory = true;
+            }
+            this.ClientLog[this.clientid] = this.ClientLog[this.clientid].concat(result.logs);
+            await this.UpdateClientLog({
+              clientid: this.clientid,
+              logs: this.ClientLog[this.clientid],
+            });
+
+            for (const i in this.$refs!.logref) {
+              const LogsHeight = window
+                .getComputedStyle((this as any).$refs!.logref[i])
+                .getPropertyValue("height");
+              (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
+            }
+          }
+
+          /* Scroll to bottom */
+          if (Object.keys(this.ClientLog[this.clientid]).length > 0) {
+            (this as any).$refs.logref[(this as any).$refs!.logref.length - 1].scrollIntoView();
+          }
+        }
       }
     }
   }
 
   @Watch("NewLog")
-  onPropertyChanged2(data: any) {
+  async onPropertyChanged2(data: any) {
     if (this.clientid === data.ClientId) {
-      for (const i in this.$refs!.logref) {
-        const LogsHeight = window
-          .getComputedStyle((this as any).$refs!.logref[i])
-          .getPropertyValue("height");
-        (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
+      if (Object.values(this.ClientLog[this.currentclientid]).length > 0) {
+        const gt = this.ClientLog[this.currentclientid].slice(-1)[0]._id;
+        let result: any;
+        await this.GetLogs({ clientid: this.clientid, gt: gt }).then((data: any) => {
+          result = data;
+        });
+        if (result.status === serverstatus.SUCCESS) {
+          if (result.logs.length === 0) {
+            this.ChechFullHistory = true;
+          }
+          this.ClientLog[this.clientid] = this.ClientLog[this.clientid].concat(result.logs);
+          await this.UpdateClientLog({
+            clientid: this.clientid,
+            logs: this.ClientLog[this.clientid],
+          });
+
+          for (const i in this.$refs!.logref) {
+            const LogsHeight = window
+              .getComputedStyle((this as any).$refs!.logref[i])
+              .getPropertyValue("height");
+            (this as any).$refs!.timeref[i].style.lineHeight = LogsHeight;
+          }
+        }
       }
 
       /* Scroll to bottom */
@@ -517,6 +560,7 @@ export default class WindowLog extends Vue {
           line-height: 20px;
           font-size: 14px;
           margin: 0;
+          word-break: break-all;
         }
         .log:hover {
           background-color: #004352;
